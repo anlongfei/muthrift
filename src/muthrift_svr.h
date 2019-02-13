@@ -16,6 +16,15 @@
 //#include <thrift/Thrift.h>
 //#include <thrift/server/TServer.h>
 
+#include <stdint.h>
+#include <muduo/net/TcpConnection.h>
+#include <muduo/net/TcpServer.h>
+#include <muduo/net/EventLoop.h>
+#include <sys/timerfd.h>
+
+using std::make_shared;
+using std::shared_ptr;
+
 //class muthrift_svr : public TServer {
 class muthrift_svr {
     public:
@@ -24,10 +33,10 @@ class muthrift_svr {
         virtual ~muthrift_svr();
         void serve();
         void OnWriteComplete(const muduo::net::TcpConnectionPtr &conn);
-        void OnConn(const TcpConnectionPtr &conn);
-        void CthriftSvr::OnMsg(const muduo::net::TcpConnectionPtr &conn,
+        void OnConn(const muduo::net::TcpConnectionPtr &conn);
+        void OnMsg(const muduo::net::TcpConnectionPtr &conn,
                                muduo::net::Buffer *buffer,
-                               Timestamp receiveTime);
+                               muduo::Timestamp receiveTime);
     private:
         std::shared_ptr<muduo::net::TcpServer> m_tcp_server;
         muduo::net::EventLoop m_event_loop;  //guarantee init before server_ !!

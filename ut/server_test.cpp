@@ -16,6 +16,7 @@ using namespace std;
 
 int main() {
     muthrift_svr server(8090);
+    server.init();
     server.serve();
     return 0;
 }

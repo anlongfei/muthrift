@@ -1,4 +1,4 @@
-1.cmake version
+#1.cmake version
 cmake_minimum_required(VERSION 2.8)
 
 #2.project name，指定项目的名称，一般和项目的文件夹名称对应
@@ -6,7 +6,7 @@ PROJECT(muthrift_test)
 
 set(CMAKE_C_CFLAGS "-Wall")
 # set(CMAKE_CXX_FLAGS "-save-temps -Ofast -g -w -pthread -fpermissive -Wl,--export-dynamic -Wno-deprecated -lmuduo_base")
-set(CMAKE_CXX_FLAGS "-Ofast -g -w -pthread -fpermissive -Wl,--export-dynamic -Wno-deprecated -lmuduo_base")
+set(CMAKE_CXX_FLAGS "-Ofast -g -w -pthread -fpermissive -Wl,--export-dynamic -Wno-deprecated -std=c++11")
 #g++ -g -w -Ofast -pthread test_thread.cpp    -lmuduo_net -lmuduo_base
 
 
@@ -19,6 +19,7 @@ add_definitions(
 #3.head file path，头文件目录
 INCLUDE_DIRECTORIES(
     "${PROJECT_SOURCE_DIR}/deps/muduo/include"
+    "${PROJECT_SOURCE_DIR}/src"
     )
 
 #4.source directory，源文件目录
@@ -40,14 +41,8 @@ ADD_EXECUTABLE(${PROJECT_NAME} ${TEST_MATH})
 #TARGET_LINK_LIBRARIES(${PROJECT_NAME} m)
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME}
-    thrift
-    boost_date_time
-    boost_filesystem
-    boost_thread
-    -lmuduo_base
-    -lmuduo_http
-    -lmuduo_net
+    ${PROJECT_SOURCE_DIR}/deps/muduo/lib/libmuduo_net.a
+    ${PROJECT_SOURCE_DIR}/deps/muduo/lib/libmuduo_base.a
     -pthread
     m
-    z
     )

@@ -11,34 +11,42 @@
 # ====================================================*/
 
 #include <iostream>
+
 #include "muthrift_svr.h"
+
 using namespace std;
+using namespace std::placeholders;
+using std::make_shared;
+using std::shared_ptr;
 
 muthrift_svr::muthrift_svr(const uint16_t &u16_port) {
-    m_tcp_server = boost::make_shared<muduo::net::TcpServer>(&m_event_loop,
-                                                             muduo::net::InetAddress(u16_port),
-                                                             "test_server"); // TODO
+    m_tcp_server = make_shared<muduo::net::TcpServer>(&m_event_loop,
+                                                      muduo::net::InetAddress(u16_port),
+                                                      "test_server"); // TODO
 }
 bool muthrift_svr::init() {
-    m_tcp_server.setConnectionCallback(
-                                       std::bind(&EchoServer::OnConn, this, _1));
-    m_tcp_server.setMessageCallback(
-                                    std::bind(&EchoServer::OnMsg, this, _1, _2, _3));
+    m_tcp_server->setConnectionCallback(
+                                       std::bind(&muthrift_svr::OnConn, this, _1));
+    m_tcp_server->setMessageCallback(
+                                    std::bind(&muthrift_svr::OnMsg, this, _1, _2, _3));
+    m_tcp_server->start();
 }
-virtual muthrift_svr::~muthrift_svr() {
-}
+
 void muthrift_svr::serve() {
     m_event_loop.loop();
+}
+
+muthrift_svr::~muthrift_svr() {
 }
 
 void muthrift_svr::OnWriteComplete(const muduo::net::TcpConnectionPtr &conn) {
     std::cout << "OnWriteComplete ..." << std::endl;
 }
-void muthrift_svr::OnConn(const TcpConnectionPtr &conn) {
+void muthrift_svr::OnConn(const muduo::net::TcpConnectionPtr &conn) {
     std::cout << "OnConn ..." << std::endl;
 }
 void muthrift_svr::OnMsg(const muduo::net::TcpConnectionPtr &conn,
                          muduo::net::Buffer *buffer,
-                         Timestamp receiveTime) {
+                         muduo::Timestamp receiveTime) {
     std::cout << "OnMsg ..." << std::endl;
 }
